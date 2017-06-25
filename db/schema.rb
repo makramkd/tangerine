@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170625193634) do
+ActiveRecord::Schema.define(version: 20170625202144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "swipes", force: :cascade do |t|
+    t.integer "swiper_user_id"
+    t.integer "swipee_user_id"
+    t.datetime "time_swiped"
+    t.integer "direction"
+    t.index ["swiper_user_id", "swipee_user_id"], name: "swiper_swipee_unique_idx", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "firstname"
@@ -23,4 +31,6 @@ ActiveRecord::Schema.define(version: 20170625193634) do
     t.text "bio"
   end
 
+  add_foreign_key "swipes", "users", column: "swipee_user_id"
+  add_foreign_key "swipes", "users", column: "swiper_user_id"
 end

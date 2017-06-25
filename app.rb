@@ -6,9 +6,10 @@ require_relative 'lib/init'
 class Tangerine < Sinatra::Base
   register Sinatra::ActiveRecordExtension
 
-  get '/' do
-    'Hello world!'
+  before do
+    content_type :json
   end
 end
 
+require_relative 'models/init'
 require_relative 'routes/init'
