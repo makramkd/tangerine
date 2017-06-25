@@ -1,0 +1,16 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: tangerine_dev
+  pool: 2
+  username: tangerine
+  password: tangerine
+
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: tangerine_prod
+  pool: 12
+  username: ENV['TANGERINE_USERNAME']
+  password: ENV['TANGERINE_PASSWORD']
