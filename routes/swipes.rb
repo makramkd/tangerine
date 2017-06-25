@@ -3,10 +3,9 @@ require 'json'
 class Tangerine < Sinatra::Base
 
   get '/users/:id/swipes' do
-    swipes = Swipe.find_by(swiper_user_id: params['id'])
+    swipes = Swipe.where(swiper_user_id: params['id'])
     if swipes
-      swipes = [ swipes ] if !swipes.is_a?(Array)
-      swipes = swipes.map { |swipe| swipe.hashify }
+      swipes = swipes.to_a.map { |swipe| swipe.hashify }
       { swipes: swipes }.to_json
     else
       halt 404, { message: 'no swipes found' }.to_json
