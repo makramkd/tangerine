@@ -2,14 +2,12 @@ require 'json'
 
 class Tangerine < Sinatra::Base
 
+  # Get the right swipes for a given user
   get '/users/:id/swipes' do
-    swipes = Swipe.where(swiper_user_id: params['id'])
-    if swipes
-      swipes = swipes.to_a.map { |swipe| swipe.hashify }
-      { swipes: swipes }.to_json
-    else
-      halt 404, { message: 'no swipes found' }.to_json
-    end
+    swipes = Swipe.where(swiper_user_id: params['id'],
+                         direction: Swipe::DIRECTION_RIGHT)
+    swipes = swipes.to_a.map { |swipe| swipe.hashify }
+    { swipes: swipes }.to_json
   end
 
   post '/users/:id/swipes' do
@@ -26,6 +24,12 @@ class Tangerine < Sinatra::Base
     if swiped
       if swiped.direction == Swipe::DIRECTION_RIGHT
         match = 'matched'
+        # Create match object
+        # TODO Ideal to move to a worker queue (i.e sidekiq)
+        match = Match.create(matcher_user_id: params['id'],
+                             matched_user_id: body['swipee_user_id'].to_i,
+                             time_matched: Time.now.utc)
+        match.save
       else
         match = 'not_matched'
       end
